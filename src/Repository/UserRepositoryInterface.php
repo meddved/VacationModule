@@ -10,6 +10,10 @@ namespace Repository;
 
 use Model\User;
 
+/**
+ * Interface UserRepositoryInterface
+ * @package Repository
+ */
 interface UserRepositoryInterface
 {
     /**

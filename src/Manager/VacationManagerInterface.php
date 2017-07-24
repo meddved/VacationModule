@@ -12,6 +12,10 @@ use Model\User;
 use Model\VacationDays;
 use Model\VacationRequest;
 
+/**
+ * Interface VacationManagerInterface
+ * @package Manager
+ */
 interface VacationManagerInterface
 {
     /**

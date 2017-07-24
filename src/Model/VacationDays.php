@@ -8,7 +8,7 @@
 
 namespace Model;
 
-class VacationDays
+class VacationDays implements ModelInterface
 {
     /**
      * @var int
@@ -73,7 +73,10 @@ class VacationDays
         $this->days = $days;
     }
 
-    public function mapResult($result)
+    /**
+     * @param array $result
+     */
+    public function mapResult(array $result)
     {
         $this->id = $result['id'];
         $this->user = $result['user_id']; // TODO: this has to be an instance of User model

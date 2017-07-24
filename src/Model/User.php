@@ -8,7 +8,7 @@
 
 namespace Model;
 
-class User
+class User implements ModelInterface
 {
     /**
      * @var int
@@ -115,7 +115,10 @@ class User
         $this->lastName = $lastName;
     }
 
-    public function mapResult($result)
+    /**
+     * @param array $result
+     */
+    public function mapResult(array $result)
     {
         $this->id = $result['id'];
         $this->username = $result['username'];
@@ -124,6 +127,9 @@ class User
         $this->lastName = $result['last_name'];
     }
 
+    /**
+     * @return string
+     */
     public function getColumnNamesForSave()
     {
         return 'username, created_at, first_name, last_name';

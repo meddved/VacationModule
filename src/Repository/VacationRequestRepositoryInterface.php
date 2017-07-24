@@ -11,6 +11,10 @@ namespace Repository;
 use Model\User;
 use Model\VacationRequest;
 
+/**
+ * Interface VacationRequestRepositoryInterface
+ * @package Repository
+ */
 interface VacationRequestRepositoryInterface
 {
     /**

@@ -12,6 +12,10 @@ use DbAdapter\DbAdapterInterface;
 use Model\User;
 use Model\VacationRequest;
 
+/**
+ * Class VacationRequestRepository
+ * @package Repository
+ */
 class VacationRequestRepository implements VacationRequestRepositoryInterface
 {
     const TABLE_NAME = 'vacation_requests';
@@ -37,7 +41,7 @@ class VacationRequestRepository implements VacationRequestRepositoryInterface
      */
     public function findById($id)
     {
-        return $this->connection->findBy(
+         return $this->connection->findBy(
             VacationRequestRepository::COLUMN_NAME_ID,
             $id,
             VacationRequestRepository::TABLE_NAME,
@@ -57,14 +61,18 @@ class VacationRequestRepository implements VacationRequestRepositoryInterface
         }
     }
 
+    /**
+     * @param VacationRequest $request
+     *
+     * @return mixed|VacationRequest
+     */
     private function create(VacationRequest $request)
     {
-        $values = $request->getUser()->getId() .
+        $values = $request->getUserId() .
             ',' . $request->getRequestedDays() .
             ',\'' . $request->getStatus() . '\'';
 
         $id = $this->connection->save(
-            $request,
             VacationRequestRepository::TABLE_NAME,
             $request->getColumnNamesForSave(),
             $values
@@ -73,6 +81,11 @@ class VacationRequestRepository implements VacationRequestRepositoryInterface
         return $this->findById($id);
     }
 
+    /**
+     * @param VacationRequest $request
+     *
+     * @return bool|VacationRequest
+     */
     private function update(VacationRequest $request)
     {
         $columns = $request->getColumnsForUpdate();
@@ -99,7 +112,7 @@ class VacationRequestRepository implements VacationRequestRepositoryInterface
      */
     public function findAll()
     {
-        // TODO: Implement findAll() method.
+        return $this->connection->findAll(VacationRequestRepository::TABLE_NAME, VacationRequest::class);
     }
 
     /**

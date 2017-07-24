@@ -8,8 +8,13 @@
 
 namespace DbAdapter;
 
+use Model\ModelInterface;
 use mysqli;
 
+/**
+ * Class MySqlAdapter
+ * @package DbAdapter
+ */
 class MySqlAdapter implements DbAdapterInterface
 {
     const DB_CONFIG_LOCATION = '/../../config.ini';
@@ -18,6 +23,9 @@ class MySqlAdapter implements DbAdapterInterface
     const PASSWORD = 'password';
     const DB_NAME = 'dbname';
 
+    /**
+     * @var mysqli
+     */
     protected static $connection;
 
     /**
@@ -25,59 +33,41 @@ class MySqlAdapter implements DbAdapterInterface
      */
     public function connect()
     {
-        if(!isset(self::$connection)) {
+        if (!isset(self::$connection)) {
             $config = parse_ini_file(__DIR__ . MySqlAdapter::DB_CONFIG_LOCATION);
 
             self::$connection = new mysqli(
                 MySqlAdapter::HOST,
                 $config[MySqlAdapter::USERNAME],
-                null,
+                $config[MySqlAdapter::PASSWORD], // set this to null if db user does not have a password set
                 $config[MySqlAdapter::DB_NAME]
             );
         }
 
-        if(self::$connection === false) {
+        if (self::$connection === false) {
             // TODO: handle connection error
             return false;
         }
+
         return self::$connection;
     }
 
     /**
-     * @param string $query
-     * @return mixed
+     * @inheritdoc
      */
     public function query($query)
     {
-        // Connect to the database
         $connection = $this->connect();
 
-        // Query the database
         $result = $connection->query($query);
 
         return $result;
     }
 
     /**
-     * @return mixed
-     */
-    public function error()
-    {
-        // TODO: Implement error() method.
-    }
-
-    /**
-     * @return mixed
-     */
-    public function escape($value)
-    {
-        // TODO: Implement escape() method.
-    }
-
-    /**
      * @inheritdoc
      */
-    public function save($model, $tableName, $columnNames, $values)
+    public function save($tableName, $columnNames, $values)
     {
         $query = "INSERT INTO $tableName ($columnNames) VALUES ($values)";
 
@@ -90,6 +80,9 @@ class MySqlAdapter implements DbAdapterInterface
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function update($tableName, array $columns)
     {
         $query = 'UPDATE ' . $tableName . ' SET ';
@@ -111,9 +104,13 @@ class MySqlAdapter implements DbAdapterInterface
     /**
      * @inheritdoc
      */
-    public function remove($model, $tableName)
+    public function remove(ModelInterface $model, $tableName)
     {
-        // TODO: Implement remove() method.
+        $query = 'DELETE FROM ' . $tableName . ' WHERE id = ' . $model->getId();
+
+        $result = $this->query($query);
+
+        return $result;
     }
 
     /**
@@ -121,14 +118,16 @@ class MySqlAdapter implements DbAdapterInterface
      */
     public function select($query)
     {
-        $rows = array();
+        $rows = [];
         $result = $this->query($query);
-        if($result === false) {
-            return false;
+
+        if (!$result) {
+            return $result;
         }
         while ($row = $result->fetch_assoc()) {
             $rows[] = $row;
         }
+
         return $rows;
     }
 
@@ -137,7 +136,17 @@ class MySqlAdapter implements DbAdapterInterface
      */
     public function findAll($tableName, $model)
     {
-        // TODO: Implement findAll() method.
+        $query = 'SELECT * FROM ' . $tableName;
+
+        $rows = $this->select($query);
+
+        $models = [];
+        foreach ($rows as $row) {
+            $model = new $model();
+            $models[] = $model->mapResult($row);
+        }
+
+        return $models;
     }
 
     /**
@@ -155,5 +164,23 @@ class MySqlAdapter implements DbAdapterInterface
         $result->mapResult($results[0]);
 
         return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function error()
+    {
+        // TODO: Implement error() method.
+        // TODO: this method should handle DB errors
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function escape($value)
+    {
+        // TODO: Implement escape() method.
+        // TODO: this method should escape and caption SQL string before sendind it to DB
     }
 }

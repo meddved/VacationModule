@@ -8,7 +8,11 @@
 
 namespace Model;
 
-class VacationRequest
+/**
+ * Class VacationRequest
+ * @package Model
+ */
+class VacationRequest implements ModelInterface
 {
     const STATUS_APPROVED = 1;
     const STATUS_PENDING = 2;
@@ -20,9 +24,9 @@ class VacationRequest
     private $id;
 
     /**
-     * @var User
+     * @var int
      */
-    private $user;
+    private $userId;
 
     /**
      * @var int
@@ -33,6 +37,10 @@ class VacationRequest
      * @var int
      */
     private $status;
+
+    public function __construct()
+    {
+    }
 
     /**
      * @return int
@@ -51,19 +59,19 @@ class VacationRequest
     }
 
     /**
-     * @return User
+     * @return int
      */
-    public function getUser()
+    public function getUserId()
     {
-        return $this->user;
+        return $this->userId;
     }
 
     /**
-     * @param User $user
+     * @param int $userId
      */
-    public function setUser(User $user)
+    public function setUserId($userId)
     {
-        $this->user = $user;
+        $this->userId = $userId;
     }
 
     /**
@@ -98,24 +106,33 @@ class VacationRequest
         $this->status = $status;
     }
 
-    public function mapResult($result)
+    /**
+     * @param array $result
+     */
+    public function mapResult(array $result)
     {
         $this->id = $result['id'];
-        $this->user = $result['user_id']; // TODO: this has to be an instance of User model
+        $this->userId =  $result['user_id'];
         $this->requestedDays = $result['requested_days'];
         $this->status = $result['status'];
     }
 
+    /**
+     * @return string
+     */
     public function getColumnNamesForSave()
     {
         return 'user_id, requested_days, status';
     }
 
+    /**
+     * @return array
+     */
     public function getColumnsForUpdate()
     {
         return [
             'id' => $this->getId(),
-            'user_id' => $this->getUser()->getId(),
+            'user_id' => $this->getUserId(),
             'requested_days' => $this->getRequestedDays(),
             'status' => $this->getStatus()
         ];

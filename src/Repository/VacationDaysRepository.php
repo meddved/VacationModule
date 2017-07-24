@@ -11,6 +11,10 @@ namespace Repository;
 use DbAdapter\DbAdapterInterface;
 use Model\VacationDays;
 
+/**
+ * Class VacationDaysRepository
+ * @package Repository
+ */
 class VacationDaysRepository implements VacationDaysRepositoryInterface
 {
     const TABLE_NAME = 'vacation_days';
@@ -50,6 +54,6 @@ class VacationDaysRepository implements VacationDaysRepositoryInterface
      */
     public function findAll()
     {
-        // TODO: Implement findAll() method.
+        return $this->connection->findAll(VacationDaysRepository::TABLE_NAME, VacationDays::class);
     }
 }

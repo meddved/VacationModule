@@ -10,6 +10,10 @@ namespace Repository;
 
 use Model\VacationDays;
 
+/**
+ * Interface VacationDaysRepositoryInterface
+ * @package Repository
+ */
 interface VacationDaysRepositoryInterface
 {
     /**

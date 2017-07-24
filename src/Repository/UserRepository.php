@@ -11,10 +11,15 @@ namespace Repository;
 use DbAdapter\DbAdapterInterface;
 use Model\User;
 
+/**
+ * Class UserRepository
+ * @package Repository
+ */
 class UserRepository implements UserRepositoryInterface
 {
     const TABLE_NAME = 'users';
     const COLUMN_NAME_ID = 'id';
+    const COLUMN_NAME_USERNAME = 'username';
 
     /**
      * @var DbAdapterInterface
@@ -49,6 +54,11 @@ class UserRepository implements UserRepositoryInterface
      */
     public function findByUsername($username)
     {
-        // TODO: Implement findByUsername() method.
+        return $this->connection->findBy(
+            UserRepository::COLUMN_NAME_USERNAME,
+            $username,
+            UserRepository::TABLE_NAME,
+            User::class
+        );
     }
 }

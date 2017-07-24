@@ -8,12 +8,21 @@
 
 namespace DbAdapter;
 
+use Model\ModelInterface;
+
 interface DbAdapterInterface
 {
     /**
      * @return mixed
      */
     public function connect();
+
+    /**
+     * @param string $query
+     *
+     * @return mixed
+     */
+    public function query($query);
 
     /**
      * @param string $columnName
@@ -34,14 +43,13 @@ interface DbAdapterInterface
     public function findAll($tableName, $model);
 
     /**
-     * @param string $model
      * @param string $tableName
      * @param string $columnNames
      * @param string $values
      *
      * @return mixed
      */
-    public function save($model, $tableName, $columnNames, $values);
+    public function save($tableName, $columnNames, $values);
 
     /**
      * @param string $tableName
@@ -52,12 +60,12 @@ interface DbAdapterInterface
     public function update($tableName, array $columns);
 
     /**
-     * @param string $model
+     * @param ModelInterface $model
      * @param string $tableName
      *
      * @return mixed
      */
-    public function remove($model, $tableName);
+    public function remove(ModelInterface $model, $tableName);
 
     /**
      * @param $query
@@ -65,4 +73,16 @@ interface DbAdapterInterface
      * @return mixed
      */
     public function select($query);
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    public function escape($value);
+
+    /**
+     * @return mixed
+     */
+    public function error();
 }
